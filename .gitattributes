@@ -1,0 +1,6 @@
+# STL must be stored byte-for-byte: the PickNik file is ASCII with CRLF, and
+# core.autocrlf would rewrite it, breaking size_bytes / sha256 in final_stl/index.csv.
+*.stl binary
+*.STL binary
+# make_index.py writes LF; keep it LF in every checkout so a re-run is byte-identical.
+*.csv text eol=lf

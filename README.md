@@ -3,18 +3,21 @@
 | folder | contents | index |
 |---|---|---|
 | `final_stl/` | board L, size-L 100 mm pegs in 8 shapes (no circle), peg fixture, PickNik camera adapter | [`index.csv`](final_stl/index.csv) |
-| `pegs_M_150mm/` | the 9 FMB pegs (all 9 shapes) in size M, length 150 mm | [`index.csv`](pegs_M_150mm/index.csv), [`index.xlsx`](pegs_M_150mm/index.xlsx) |
+| `pegs_M_150mm/` | the 9 FMB pegs (all 9 shapes) in size M, length 150 mm, and board M | [`index.csv`](pegs_M_150mm/index.csv), [`index.xlsx`](pegs_M_150mm/index.xlsx) |
 
 Each `index.csv` has one row per STL in its folder. `index.xlsx` has two sheets:
 
-- `Files`: the measured columns of `index.csv` unrounded, plus a `shape` column taken from the file name.
-  Units (mm, `scale_to_mm` = 1), source, changes and license are the same for all 9 files and are listed once in
-  the `Summary` notes.
-- `Summary`: totals, min / max, the largest part, and those notes.
+- `Files`: the measured columns of `index.csv` unrounded, plus `part` (peg / board) and `shape`, both taken from
+  the file name. Units (mm, `scale_to_mm` = 1), changes and license are the same for all files, and there is one
+  source for the pegs and one for the board; these are listed once in the `Summary` notes.
+- `Summary`: statistics in three sections. All files gives the file and watertight counts, total size,
+  triangles and volume, and the largest file. Pegs gives the peg count, volume total / mean / min / max, the
+  largest-volume peg, the largest footprint, and the min / max length. Board gives its file name, bounding box
+  and volume. The notes follow.
 
 `size_MB`, the totals and the `Summary` statistics are Excel formulas, and the file also stores their results.
-Excel Protected View (how a downloaded file usually opens) and openpyxl / pandas show the stored results; a normal
-Excel open recalculates them. Use `index.csv` for scripts.
+Excel Protected View (tested with a file marked as downloaded) shows the stored results, and so do pandas and
+openpyxl with `data_only=True`. A normal Excel open recalculates them. Use `index.csv` for scripts.
 
 ## Before printing
 

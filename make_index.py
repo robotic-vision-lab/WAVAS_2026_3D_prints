@@ -2,8 +2,9 @@
 Folders in XLSX also get <folder>/index.xlsx: the measured columns plus a summary sheet with Excel formulas.
 
 size, format, triangles, extents, volume, watertight and sha256 are measured from the file.
-units / source / changes / license are declared below by file name, not measured (only the PickNik file is
-checked against its upstream blob id); a name that matches no rule is an error.
+units / source / changes / license are declared below by file name, not measured (the two PickNik files are
+pinned to their git blob ids, so a different file under the same name fails); a name that matches no rule is
+an error.
 STL carries no unit; `units` is what one native coordinate means, x/y/z/volume are converted to mm / cm3.
 size_MB = size_bytes / 1e6.
 """
@@ -39,6 +40,23 @@ PICKNIK_SRC = ("https://github.com/PickNikRobotics/picknik_accessories @3b0912d,
 PICKNIK_BLOB = "86c14ab1a4116fd975e24196015ebc383e6aebf4"  # git blob id of the file upstream at 3b0912d
 PICKNIK_LICENSE = "BSD-3-Clause, Copyright (c) 2024 PickNik Inc., see LICENSE.picknik.txt"
 
+# D455 variant, made from PICKNIK by make_d455_variant.py (kept with the lab's mount files, not in this repo).
+# The changes text was measured by hand from the two meshes (sections and boolean differences; those measuring
+# scripts are not kept), not taken from the generator's comments, which understate the changes. It is pinned to
+# this exact file, and nothing here re-checks that it is true.
+PICKNIK_D455 = "picknik_adapter_D455_mm.STL"
+PICKNIK_D455_BLOB = "899089f699122d1cc4c9f272ed4b313ef9281bff"
+PICKNIK_D455_CHANGES = (
+    f"made from {PICKNIK} by make_d455_variant.py (not in this repo): scaled from m to mm; a 6 mm thick cross "
+    "bar, 112 mm across in x, joined onto the tilted camera platform over y = -66 to -90 (mid-plane), where it "
+    "squares off the platform's tapered end; the last ~7 mm of the tip, with the 3.4 mm hole, keeps its "
+    "original taper; two 4.4 mm holes, perpendicular to the platform, at x = -47.5 / +47.5 and y = -80 on the "
+    "platform mid-plane, for the D455's two rear M4 screws (95 mm apart). Material is only added, none "
+    "removed: besides the bar it fills the original two M3 holes and the 15 mm hole, makes the two ~24 mm "
+    "windows about 2 mm shorter at their outer edge, and fills up to about 1 mm of the bottom countersink of "
+    "the 3.4 mm hole at x = 0, y = -92 on the side toward the bar (the hole itself is unchanged)")
+PICKNIK_D455_LICENSE = "BSD-3-Clause, Copyright (c) 2024 PickNik Inc. (modified), see LICENSE.picknik.txt"
+
 # native unit -> mm
 SCALE = {"mm": 1, "m": 1000}
 
@@ -48,10 +66,13 @@ COLUMNS = ["file", "size_bytes", "size_MB", "stl_format", "triangles", "units", 
 
 def provenance(name, raw):
     """(units, source, changes, license)"""
+    blob = hashlib.sha1(b"blob %d\0" % len(raw) + raw).hexdigest()
     if name == PICKNIK:
-        blob = hashlib.sha1(b"blob %d\0" % len(raw) + raw).hexdigest()
         assert blob == PICKNIK_BLOB, (name, blob)
         return "m", PICKNIK_SRC, "none", PICKNIK_LICENSE
+    if name == PICKNIK_D455:
+        assert blob == PICKNIK_D455_BLOB, (name, blob)
+        return "mm", PICKNIK_SRC, PICKNIK_D455_CHANGES, PICKNIK_D455_LICENSE
     if name == "peg_fixture.stl":
         step = "peg fixture.step"
     elif name.startswith("board_"):
